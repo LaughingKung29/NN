@@ -32,11 +32,10 @@ function main(config) {
   const urlTestBase = { url: "http://www.gstatic.com/generate_204", interval: 300, tolerance: 50 };
   const newProxyGroups = [];
 
-  // --- 1. 基础组 (已移除自建组) ---
+  // --- 1. 基础组 ---
   newProxyGroups.push(createGroup("🚀 国外流量", "select", ["♻️ 自动选择", "🔯 故障转移", "🔮 负载均衡", "✈️ 手动选择", "🛩️ 手动选择备用"]));
   newProxyGroups.push(createGroup("✈️ 手动选择", "select", [proxies]));
   newProxyGroups.push(createGroup("🛩️ 手动选择备用", "select", [proxies]));
-  
   const baseNodes = ["✈️ 手动选择", "🛩️ 手动选择备用"];
 
   // --- 2. 核心分流组 ---
@@ -69,12 +68,12 @@ function main(config) {
   newProxyGroups.push(createGroup("🎮 游戏平台", "select", ["🎯 国内流量", "🚀 国外流量", ...baseNodes]));
   newProxyGroups.push(createGroup("🛑 广告拦截", "select", ["REJECT", "🎯 国内流量", "🚀 国外流量"]));
 
-  // --- 4. 自动组 ---
+  // --- 4. 自动选择组 ---
   newProxyGroups.push(createGroup("♻️ 自动选择", "url-test", [getProxies(rxNonDomestic)], urlTestBase));
   newProxyGroups.push(createGroup("🔯 故障转移", "fallback", [getProxies(rxNonDomestic)], urlTestBase));
   newProxyGroups.push(createGroup("🔮 负载均衡", "load-balance", [getProxies(rxNonDomestic)], urlTestBase));
 
-  // --- 5. 万能动态补丁 ---
+  // --- 5. 万能动态补丁 (防止 Rules 报错) ---
   const newNames = newProxyGroups.map(g => g.name);
   originalGroups.forEach(old => {
     if (!newNames.includes(old)) {
@@ -83,5 +82,36 @@ function main(config) {
   });
 
   config['proxy-groups'] = newProxyGroups;
+
+  // --- 6. 核心：强制置顶分流规则 (新增 Grok & Sora) ---
+  const customRules = [
+    // TikTok 置顶
+    "DOMAIN-SUFFIX,tiktok.com,🎶 TikTok",
+    "DOMAIN-SUFFIX,tiktokv.com,🎶 TikTok",
+    "DOMAIN-SUFFIX,tiktokcdn.com,🎶 TikTok",
+    "DOMAIN-SUFFIX,byteoversea.com,🎶 TikTok",
+    "DOMAIN-KEYWORD,tiktok,🎶 TikTok",
+    // AI 置顶 (含 Sora 和 Grok)
+    "DOMAIN-SUFFIX,openai.com,🧚 AI",
+    "DOMAIN-SUFFIX,chatgpt.com,🧚 AI",
+    "DOMAIN-SUFFIX,sora.com,🧚 AI",
+    "DOMAIN-SUFFIX,anthropic.com,🧚 AI",
+    "DOMAIN-SUFFIX,claude.ai,🧚 AI",
+    "DOMAIN-SUFFIX,grok.com,🧚 AI",
+    "DOMAIN-SUFFIX,x.ai,🧚 AI",
+    "DOMAIN-SUFFIX,gemini.google.com,🧚 AI",
+    "DOMAIN-KEYWORD,openai,🧚 AI",
+    "DOMAIN-KEYWORD,chatgpt,🧚 AI",
+    "DOMAIN-KEYWORD,anthropic,🧚 AI",
+    "DOMAIN-KEYWORD,claude,🧚 AI",
+    "DOMAIN-KEYWORD,grok,🧚 AI"
+  ];
+
+  if (config.rules) {
+    config.rules = [...customRules, ...config.rules];
+  } else {
+    config.rules = customRules;
+  }
+
   return config;
 }
