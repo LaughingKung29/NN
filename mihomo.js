@@ -391,7 +391,7 @@ const serviceConfigs = [
   {
     name: 'TikTok',
     baseOption: selectBaseOption,
-    defaultSelected: '日本',
+    defaultSelected: '美国',
     providers: {
       tiktok: {
         ...ruleProviderCommonDomain,
