@@ -33,7 +33,7 @@ const ruleOptionsEnable = {
   Steam: false, // Steam游戏平台
   TikTok: true, // TikTok视频平台
   Twitter: false, // Twitter社交平台
-  Meta: true, // Meta服务
+  Meta: false, // Meta服务
   Line: false, // Line通讯软件
   Netflix: false, // Netflix视频平台
   Emby: true, // Emby媒体服务
@@ -43,7 +43,7 @@ const ruleOptionsEnable = {
   PayPal: false, // PayPal支付服务
   Patreon: false, // Patreon创作者赞助平台
   EHentai: false, // E-Hentai网站
-  AdBlock: true, // 广告拦截
+  AdBlock: false, // 广告拦截
 
   // 以下为非分流策略配置
   极简模式: false, // 是否启用极简模式
@@ -374,6 +374,42 @@ const baseGroups = [
 const serviceConfigs = [
   ...baseGroups,
   {
+    name: 'AI',
+    baseOption: selectBaseOption,
+    defaultSelected: '美国',
+    providers: {
+      ai: {
+        ...ruleProviderCommonDomain,
+        url: `${ruleSetBaseUrl}geosite/category-ai-!cn.mrs`,
+        path: './ruleset/ai.mrs',
+        'path-in-bundle': 'geo/geosite/category-ai-!cn.mrs',
+      },
+    },
+    icon: `${iconBaseUrl}OpenAI.svg`,
+    rules: ['RULE-SET,ai,AI'],
+  },  
+  {
+    name: 'TikTok',
+    baseOption: selectBaseOption,
+    defaultSelected: '日本',
+    providers: {
+      tiktok: {
+        ...ruleProviderCommonDomain,
+        url: `${ruleSetBaseUrl}geosite/tiktok.mrs`,
+        path: './ruleset/tiktok.mrs',
+        'path-in-bundle': 'geo/geosite/tiktok.mrs',
+      },
+      tiktok_ip: {
+        ...ruleProviderCommonIpcidr,
+        url: `${ruleSetBaseUrl}geoip/tiktok.mrs`,
+        path: './ruleset/tiktok_ip.mrs',
+        'path-in-bundle': 'geo/geoip/tiktok.mrs',
+      },
+    },
+    icon: `${iconBaseUrl}TikTok.svg`,
+    rules: ['RULE-SET,tiktok,TikTok', 'RULE-SET,tiktok_ip,TikTok,no-resolve'],
+  },
+  {
     name: 'FCM',
     baseOption: selectBaseOption,
     direct: true,
@@ -422,21 +458,6 @@ const serviceConfigs = [
     },
     icon: `${iconBaseUrl}Google.svg`,
     rules: ['RULE-SET,google,Google', 'RULE-SET,google_ip,Google,no-resolve'],
-  },
-  {
-    name: 'AI',
-    baseOption: selectBaseOption,
-    defaultSelected: '美国',
-    providers: {
-      ai: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/category-ai-!cn.mrs`,
-        path: './ruleset/ai.mrs',
-        'path-in-bundle': 'geo/geosite/category-ai-!cn.mrs',
-      },
-    },
-    icon: `${iconBaseUrl}OpenAI.svg`,
-    rules: ['RULE-SET,ai,AI'],
   },
   {
     name: 'Microsoft',
@@ -526,27 +547,6 @@ const serviceConfigs = [
     },
     icon: `${iconBaseUrl}Steam.svg`,
     rules: ['RULE-SET,steam,Steam', 'RULE-SET,steam_ip,Steam,no-resolve'],
-  },
-  {
-    name: 'TikTok',
-    baseOption: selectBaseOption,
-    defaultSelected: '日本',
-    providers: {
-      tiktok: {
-        ...ruleProviderCommonDomain,
-        url: `${ruleSetBaseUrl}geosite/tiktok.mrs`,
-        path: './ruleset/tiktok.mrs',
-        'path-in-bundle': 'geo/geosite/tiktok.mrs',
-      },
-      tiktok_ip: {
-        ...ruleProviderCommonIpcidr,
-        url: `${ruleSetBaseUrl}geoip/tiktok.mrs`,
-        path: './ruleset/tiktok_ip.mrs',
-        'path-in-bundle': 'geo/geoip/tiktok.mrs',
-      },
-    },
-    icon: `${iconBaseUrl}TikTok.svg`,
-    rules: ['RULE-SET,tiktok,TikTok', 'RULE-SET,tiktok_ip,TikTok,no-resolve'],
   },
   {
     name: 'Twitter',
