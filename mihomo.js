@@ -43,7 +43,7 @@ const ruleOptionsEnable = {
   PayPal: false, // PayPal支付服务
   Patreon: false, // Patreon创作者赞助平台
   EHentai: false, // E-Hentai网站
-  AdBlock: false, // 广告拦截
+  AdBlock: true, // 广告拦截
 
   // 以下为非分流策略配置
   极简模式: false, // 是否启用极简模式
