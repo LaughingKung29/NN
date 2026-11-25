@@ -1655,9 +1655,9 @@ function main(config) {
   if (proxyProviders) newConfig['proxy-providers'] = proxyProviders;
   newConfig['proxy-groups'] = [
     globalGroup,
-    ...functionalGroups,
-    ...(customGroup ? [customGroup] : []),
     ...(chainGroup ? [chainGroup] : []),
+    ...(customGroup ? [customGroup] : []),
+    ...functionalGroups,
     directGroup,
     ...generatedRegionGroups,
   ];
